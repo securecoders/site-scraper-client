@@ -18,9 +18,10 @@ function opengraphio (options){
       version: '1.1'
     }, options || {});
 
-    if(!this.options.appId){
-      throw 'appId must be supplied when making requests to the API.  Get a free appId by signing up here: https://www.opengraph.io/'
-    }
+    // Will need to implement this soon
+    // if(!this.options.appId){
+    //   throw 'appId must be supplied when making requests to the API.  Get a free appId by signing up here: https://www.opengraph.io/'
+    // }
 
     return this;
   };
@@ -96,6 +97,3 @@ function opengraphio (options){
 
   return new Client(options);
 };
-
-
-
