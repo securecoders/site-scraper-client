@@ -1,6 +1,6 @@
 var
   expect = require('chai').expect,
-  ogLib = require('../index'),
+  scraperClient = require('../index'),
   testAppId = process.env.TEST_APP_ID;
 
 describe('OpenGraph.io Client Tests', function(){
@@ -9,11 +9,11 @@ describe('OpenGraph.io Client Tests', function(){
 
     it('should require app_id and other than that use defaults', function(done){
       try{
-        var OG = new ogLib();
+        var SC = new scraperClient();
 
-        expect(OG.options).to.exist;
-        expect(OG.options.version).to.equal('1.1');
-        expect(OG.options.cacheOk).to.equal(true);
+        expect(SC.options).to.exist;
+        expect(SC.options.version).to.equal('1.1');
+        expect(SC.options.cacheOk).to.equal(true);
 
         done();
       }
@@ -28,7 +28,7 @@ describe('OpenGraph.io Client Tests', function(){
         var OG = new ogLib({appId: testAppId});
 
         expect(OG.options).to.exist;
-        expect(OG.options.version).to.equal('1.1');
+        expect(OG.options.version).to.equal('1.0');
         expect(OG.options.cacheOk).to.equal(true);
 
         done();

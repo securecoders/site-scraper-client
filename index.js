@@ -3,19 +3,17 @@
 var _ = require('lodash'),
   request = require('request-promise');
 
-module.exports = opengraphio;
+module.exports = scraper;
 
-function opengraphio (options){
+function scraper (options){
   var Client;
-
-
 
   Client = function(options){
 
     // Set options for use in all requests
     this.options = _.extend({
       cacheOk: true,
-      version: '1.1'
+      version: '1.0'
     }, options || {});
 
     // Will need to implement this soon
@@ -29,7 +27,7 @@ function opengraphio (options){
   Client.prototype._getSiteInfoUrl = function(url, options){
     var proto = options.appId ? 'https' : 'http';
 
-    var baseUrl = proto + '://opengraph.io/api/' + options.version + '/site/' + encodeURIComponent(url);
+    var baseUrl = proto + '://localhost:5000/api/' + options.version + '/scrape/' + encodeURIComponent(url);
 
     return baseUrl;
   };
