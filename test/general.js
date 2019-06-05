@@ -3,33 +3,34 @@ var
   scraperClient = require('../index'),
   testAppId = process.env.TEST_APP_ID;
 
-describe('OpenGraph.io Client Tests', function(){
+describe('Scraper Client Tests', function(){
   
   describe('Client Setup', function(){
 
-    it('should require app_id and other than that use defaults', function(done){
+    it('Test Require appId, Use defaults', function(done){
       try{
         var SC = new scraperClient();
 
         expect(SC.options).to.exist;
-        expect(SC.options.version).to.equal('1.1');
+        expect(SC.options.version).to.equal('1.0');
         expect(SC.options.cacheOk).to.equal(true);
 
         done();
       }
       catch (e){
-        expect(e).to.contain('appId');
+        //expect(e).to.contain('appId');
+        expect(e).to.eql('appId must be supplied when making requests to the API.');
         done();
       };
     });
 
-    it('should initialize with app_id and other than that use defaults', function(done){
+    it('Initialize with appId, Use defaults', function(done){
       try{
-        var OG = new ogLib({appId: testAppId});
+        var sC = new scraperClient({appId: testAppId});
 
-        expect(OG.options).to.exist;
-        expect(OG.options.version).to.equal('1.0');
-        expect(OG.options.cacheOk).to.equal(true);
+        expect(sC.options).to.exist;
+        expect(sC.options.version).to.equal('1.0');
+        expect(sC.options.cacheOk).to.equal(true);
 
         done();
       }
@@ -39,39 +40,39 @@ describe('OpenGraph.io Client Tests', function(){
       };
     });
 
-    it('should allow overriding of defaults', function(done){
+    it('Allow overriding of defaults', function(done){
 
-      var OG = new ogLib({cacheOk: false, appId: testAppId});
-      expect(OG.options.cacheOk).to.equal(false);
+      var sC = new scraperClient({cacheOk: false, appId: testAppId});
+      expect(sC.options.cacheOk).to.equal(false);
 
       // default unimpacted values should still be there
-      expect(OG.options.version).to.equal('1.1');
+      expect(sC.options.version).to.equal('1.0');
 
       done();
 
     });
 
-    it('should be able to initialize with one line and no options', function(done){
+    it('Initialize with one line and no options', function(done){
 
-      var OG = require('../index')({cacheOk: false, appId: testAppId});
+      var sC = require('../index')({cacheOk: false, appId: testAppId});
 
-      expect(OG.options.cacheOk).to.equal(false);
+      expect(sC.options.cacheOk).to.equal(false);
 
       // default unimpacted values should still be there
-      expect(OG.options.version).to.equal('1.1');
+      expect(sC.options.version).to.equal('1.0');
 
       done();
 
     });
 
-    it('should be able to initialize with one line', function(done){
+    it('Initialize with one line', function(done){
 
-      var OG = require('../index')({appId: testAppId});
+      var sC = require('../index')({appId: testAppId});
 
-      expect(OG.options.cacheOk).to.equal(true);
+      expect(sC.options.cacheOk).to.equal(true);
 
       // default unimpacted values should still be there
-      expect(OG.options.version).to.equal('1.1');
+      expect(sC.options.version).to.equal('1.0');
 
       done();
 
@@ -81,26 +82,26 @@ describe('OpenGraph.io Client Tests', function(){
 
   describe('Request Setup', function(){
 
-    it('should create a valid URL with no options', function(done){
+    it('Create a valid URL with no options', function(done){
 
       var target = 'http://cnn.com';
 
-      var OG = new ogLib({appId: testAppId});
-      var url = OG._getSiteInfoUrl(target, OG.options);
+      var sC = new scraperClient({appId: testAppId});
+      var url = sC._getSiteInfoUrl(target, sC.options);
 
-      expect(url).to.equal('https://opengraph.io/api/1.1/site/' + encodeURIComponent(target));
+      expect(url).to.equal('https://localhost/api/1.0/scrape/?url=' + encodeURIComponent(target));
       done();
 
     });
 
-    it('should use https when using an appId', function(done){
+    it('Use https when using an appId', function(done){
 
       var target = 'http://cnn.com';
 
-      var OG = new ogLib({appId: '111111111'});
-      var url = OG._getSiteInfoUrl(target, OG.options);
+      var sC = new scraperClient({appId: '111111111'});
+      var url = sC._getSiteInfoUrl(target, sC.options);
 
-      expect(url).to.equal('https://opengraph.io/api/1.1/site/' + encodeURIComponent(target));
+      expect(url).to.equal('https://localhost/api/1.0/scrape/?url=' + encodeURIComponent(target));
       done();
 
     });
@@ -109,8 +110,8 @@ describe('OpenGraph.io Client Tests', function(){
 
       var appId = 'XXXXXXXXXX';
 
-      var OG = new ogLib({cacheOk: false, appId: appId});
-      var params = OG._getSiteInfoQueryParams(OG.options);
+      var sC = new scraperClient({cacheOk: false, appId: appId});
+      var params = sC._getSiteInfoQueryParams(sC.options);
 
       expect(params.cache_ok).to.equal('false');
       expect(params.app_id).to.equal(appId);
@@ -123,53 +124,54 @@ describe('OpenGraph.io Client Tests', function(){
 
   describe('Full Tests', function(){
 
-    var OG;
+    var sC;
     var testUrl ='http://github.com';
 
     before(function(done){
-      OG = new ogLib({appId: testAppId});
+      sC = new scraperClient({appId: testAppId});
       done();
     });
 
-    it('should get results from a site with no option and only a callback', function(done){
+    it('Get results from a site with no option and only a callback', function(done){
 
-      OG.getSiteInfo(testUrl , function(err, result){
+      sC.getSiteInfo(testUrl , function(err, result){
         expect(err).to.not.exist;
         expect(result).to.exist;
         expect(result.url).to.equal(testUrl);
-        expect(result.openGraph.site_name).to.equal('GitHub');
+        expect(result.fullResponse.statusCode).to.equal(200);
         done();
       });
 
     });
 
-    it('should get results from a site with options and a callback', function(done){
+    it('Get results from a site with options and a callback', function(done){
 
-      OG.getSiteInfo(testUrl, {}, function(err, result){
+      sC.getSiteInfo(testUrl, {}, function(err, result){
         expect(err).to.not.exist;
         expect(result).to.exist;
         expect(result.url).to.equal(testUrl);
-        expect(result.openGraph.site_name).to.equal('GitHub');
+        expect(result.fullResponse.statusCode).to.equal(200);
+
         done();
       });
     });
 
-    it('should get results from a site with no options returning a promise', function(){
-      return OG.getSiteInfo(testUrl)
+    it('Get results from a site with no options returning a promise', function(){
+      return sC.getSiteInfo(testUrl)
         .then(function(result){
           expect(result).to.exist;
           expect(result.url).to.equal(testUrl);
-          expect(result.openGraph.site_name).to.equal('GitHub');
+          expect(result.fullResponse.statusCode).to.equal(200);
           return;
         });
     });
 
-    it('should get results from a site with options returning a promise', function(){
-      return OG.getSiteInfo(testUrl, {})
+    it('Get results from a site with options returning a promise', function(){
+      return sC.getSiteInfo(testUrl, {})
         .then(function(result){
           expect(result).to.exist;
           expect(result.url).to.equal(testUrl);
-          expect(result.openGraph.site_name).to.equal('GitHub');
+          expect(result.fullResponse.statusCode).to.equal(200);
           return;
         });
     });

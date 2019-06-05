@@ -17,9 +17,9 @@ function scraper (options){
     }, options || {});
 
     // Will need to implement this soon
-    // if(!this.options.appId){
-    //   throw 'appId must be supplied when making requests to the API.  Get a free appId by signing up here: https://www.opengraph.io/'
-    // }
+    if(!this.options.appId){
+      throw 'appId must be supplied when making requests to the API.'
+    }
 
     return this;
   };
@@ -27,7 +27,7 @@ function scraper (options){
   Client.prototype._getSiteInfoUrl = function(url, options){
     var proto = options.appId ? 'https' : 'http';
 
-    var baseUrl = proto + '://localhost:5000/api/' + options.version + '/scrape/' + encodeURIComponent(url);
+    var baseUrl = proto + '://localhost/api/' + options.version + '/scrape/?url=' + encodeURIComponent(url);
 
     return baseUrl;
   };
