@@ -8,6 +8,8 @@ module.exports = scraper;
 function scraper (options){
   var Client;
 
+  /**
+   * Generate a new instance of the scraper class.
    *
    * @param {Object} Options that can be forwarded to the API.
    * @return {Object} Returns this instance of the scraper class.
