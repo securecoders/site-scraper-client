@@ -62,6 +62,10 @@ function scraper (options){
       queryStringValues.app_id = options.appId;
     }
 
+    if(options.json){
+      queryStringValues.json = options.json;
+    }
+
     return queryStringValues;
   };
 
@@ -79,15 +83,19 @@ function scraper (options){
     var callback;
 
     if(options && typeof(options) !== 'function'){
+      // Set the Options if its NOT a function.
       opts = options;
     }
     else if(options && typeof(options) === 'function'){
+      // Reassign "options" (really the callback) to be the callback
+      //  as the user has NO options.
       callback = options;
     }
 
-    if(cb){
+    // Set the Callback when its NOT a function.
+    if(typeof(cb) === 'function'){
       callback = cb;
-    };
+    }
 
     var requestOptions = _.extend(this.options, opts);
 
@@ -98,7 +106,8 @@ function scraper (options){
       method: 'GET',
       uri: baseUrl,
       qs: queryStringValues,
-      json: true
+      json: true,
+      encoding: 'utf8'
     };
 
     return request(params)
@@ -142,39 +151,12 @@ function scraper (options){
 
     if(cb){
       callback = cb;
-    };
+    }
 
     opts.full_render = true;
 
-    var requestOptions = _.extend(this.options, opts);
+    return this.getSiteData(url, opts, callback);
 
-    var baseUrl = this._getSiteInfoUrl(url, requestOptions);
-    var queryStringValues = this._getSiteInfoQueryParams(requestOptions);
-
-    var params = {
-      method: 'GET',
-      uri: baseUrl,
-      qs: queryStringValues,
-      json: true
-    };
-
-    return request(params)
-        .then(function(results){
-          if(callback){
-            callback(null, results);
-          }
-          else{
-            return results;
-          }
-        })
-        .catch(function(err){
-          if(callback){
-            callback(err);
-          }
-          else{
-            Promise.reject(err);
-          }
-        });
   };
 
   return new Client(options);

@@ -134,11 +134,12 @@ describe('Scraper Client Tests', function(){
 
     it('Get results from a site with no option and only a callback', function(done){
 
-      sC.getSiteData(testUrl , function(err, result){
+      sC.getSiteData(testUrl , {json: true}, function(err, result){
         expect(err).to.not.exist;
         expect(result).to.exist;
         expect(result.url).to.equal(testUrl);
-        expect(result.fullResponse.statusCode).to.equal(200);
+        expect(result.response.statusCode).to.equal(200);
+
         done();
       });
 
@@ -146,44 +147,47 @@ describe('Scraper Client Tests', function(){
 
     it('Get results from a site with options and a callback', function(done){
 
-      sC.getSiteData(testUrl, {}, function(err, result){
+      sC.getSiteData(testUrl, {json: true}, function(err, result){
         expect(err).to.not.exist;
         expect(result).to.exist;
         expect(result.url).to.equal(testUrl);
-        expect(result.fullResponse.statusCode).to.equal(200);
+        expect(result.response.statusCode).to.equal(200);
 
         done();
       });
     });
 
-    it('Get results from a site with no options returning a promise', function(){
-      return sC.getSiteData(testUrl)
+    it('Get results from a site with no options returning a promise', function(done){
+      sC.getSiteData(testUrl, {json: true})
         .then(function(result){
           expect(result).to.exist;
           expect(result.url).to.equal(testUrl);
-          expect(result.fullResponse.statusCode).to.equal(200);
-          return;
+          expect(result.response.statusCode).to.equal(200);
+
+          done();
         });
     });
 
-    it('Get results from a site with options returning a promise', function(){
-      return sC.getSiteData(testUrl, {})
-          .then(function(result){
-            expect(result).to.exist;
-            expect(result.url).to.equal(testUrl);
-            expect(result.fullResponse.statusCode).to.equal(200);
-            return;
-          });
+    it('Get results from a site with options returning a promise', function(done){
+      sC.getSiteData(testUrl, {json: true})
+        .then(function(result){
+          expect(result).to.exist;
+          expect(result.url).to.equal(testUrl);
+          expect(result.response.statusCode).to.equal(200);
+
+          done();
+        });
     });
 
-    it('Get full page render using a promise.', function(){
-      return sC.getSiteRender(testUrl, {})
-          .then(function(result){
-            expect(result).to.exist;
-            expect(result.url).to.equal(testUrl);
-            expect(result.fullResponse.statusCode).to.equal(200);
-            return;
-          });
+    it('Get full page render using a promise.', function(done){
+      sC.getSiteRender(testUrl, {json: true})
+        .then(function(result){
+          expect(result).to.exist;
+          expect(result.url).to.equal(testUrl);
+          expect(result.response.statusCode).to.equal(200);
+
+          done();
+        });
     });
 
   });
