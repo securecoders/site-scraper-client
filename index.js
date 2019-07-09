@@ -16,18 +16,18 @@ function scraper (options){
    */
   Client = function(options){
 
-    // Set options for use in all requests
-    this.options = _.extend({
-      cacheOk: true,
-      version: '1.0'
-    }, options || {});
+	// Set options for use in all requests
+	this.options = _.extend({
+	  cacheOk: true,
+	  version: '1.0'
+	}, options || {});
 
-    // Will need to implement this soon
-    if(!this.options.appId){
-      throw 'appId must be supplied when making requests to the API.'
-    }
+	// Will need to implement this soon
+	if(!this.options.appId){
+	  throw 'appId must be supplied when making requests to the API.'
+	}
 
-    return this;
+	return this;
   };
 
   /**
@@ -38,11 +38,11 @@ function scraper (options){
    * @return {Object} Options Processed.
    */
   Client.prototype._getSiteInfoUrl = function(url, options){
-    var proto = options.appId ? 'https' : 'http';
+	var proto = options.appId ? 'https' : 'http';
 
-    var baseUrl = proto + '://localhost/api/' + options.version + '/scrape/?url=' + encodeURIComponent(url);
+	var baseUrl = proto + '://f66c5961.ngrok.io/api/' + options.version + '/scrape/?url=' + encodeURIComponent(url);
 
-    return baseUrl;
+	return baseUrl;
   };
 
   /**
@@ -52,21 +52,21 @@ function scraper (options){
    * @return {Object} Options Processed.
    */
   Client.prototype._getSiteInfoQueryParams = function(options){
-    var queryStringValues = {};
+	var queryStringValues = {};
 
-    if(options.cacheOk === false){
-      queryStringValues.cache_ok = 'false';
-    }
+	if(options.cacheOk === false){
+	  queryStringValues.cache_ok = 'false';
+	}
 
-    if(options.appId){
-      queryStringValues.app_id = options.appId;
-    }
+	if(options.appId){
+	  queryStringValues.app_id = options.appId;
+	}
 
-    if(options.json){
-      queryStringValues.json = options.json;
-    }
+	if(options.json){
+	  queryStringValues.json = options.json;
+	}
 
-    return queryStringValues;
+	return queryStringValues;
   };
 
   /**
@@ -79,54 +79,54 @@ function scraper (options){
    */
   Client.prototype.getSiteData = function(url, options, cb){
 
-    var opts = {};
-    var callback;
+	var opts = {};
+	var callback;
 
-    if(options && typeof(options) !== 'function'){
-      // Set the Options if its NOT a function.
-      opts = options;
-    }
-    else if(options && typeof(options) === 'function'){
-      // Reassign "options" (really the callback) to be the callback
-      //  as the user has NO options.
-      callback = options;
-    }
+	if(options && typeof(options) !== 'function'){
+	  // Set the Options if its NOT a function.
+	  opts = options;
+	}
+	else if(options && typeof(options) === 'function'){
+	  // Reassign "options" (really the callback) to be the callback
+	  //  as the user has NO options.
+	  callback = options;
+	}
 
-    // Set the Callback when its NOT a function.
-    if(typeof(cb) === 'function'){
-      callback = cb;
-    }
+	// Set the Callback when its NOT a function.
+	if(typeof(cb) === 'function'){
+	  callback = cb;
+	}
 
-    var requestOptions = _.extend(this.options, opts);
+	var requestOptions = _.extend(this.options, opts);
 
-    var baseUrl = this._getSiteInfoUrl(url, requestOptions);
-    var queryStringValues = this._getSiteInfoQueryParams(requestOptions);
+	var baseUrl = this._getSiteInfoUrl(url, requestOptions);
+	var queryStringValues = this._getSiteInfoQueryParams(requestOptions);
 
-    var params = {
-      method: 'GET',
-      uri: baseUrl,
-      qs: queryStringValues,
-      json: true,
-      encoding: 'utf8'
-    };
+	var params = {
+	  method: 'GET',
+	  uri: baseUrl,
+	  qs: queryStringValues,
+	  json: true,
+	  encoding: 'utf8'
+	};
 
-    return request(params)
-      .then(function(results){
-        if(callback){
-          callback(null, results);
-        }
-        else{
-          return results;
-        }
-      })
-      .catch(function(err){
-        if(callback){
-          callback(err);
-        }
-        else{
-          Promise.reject(err);
-        }
-      });
+	return request(params)
+	  .then(function(results){
+		if(callback){
+		  callback(null, results);
+		}
+		else{
+		  return results;
+		}
+	  })
+	  .catch(function(err){
+		if(callback){
+		  callback(err);
+		}
+		else{
+		  Promise.reject(err);
+		}
+	  });
   };
 
   /**
@@ -139,23 +139,23 @@ function scraper (options){
    */
   Client.prototype.getSiteRender = function(url, options, cb){
 
-    var opts = {};
-    var callback;
+	var opts = {};
+	var callback;
 
-    if(options && typeof(options) !== 'function'){
-      opts = options;
-    }
-    else if(options && typeof(options) === 'function'){
-      callback = options;
-    }
+	if(options && typeof(options) !== 'function'){
+	  opts = options;
+	}
+	else if(options && typeof(options) === 'function'){
+	  callback = options;
+	}
 
-    if(cb){
-      callback = cb;
-    }
+	if(cb){
+	  callback = cb;
+	}
 
-    opts.full_render = true;
+	opts.full_render = true;
 
-    return this.getSiteData(url, opts, callback);
+	return this.getSiteData(url, opts, callback);
 
   };
 
